@@ -1,0 +1,62 @@
+name: Build Debug APK
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check project structure
+        run: |
+          for f in settings.gradle.kts build.gradle.kts parser/build.gradle.kts app/build.gradle.kts app/src/main/AndroidManifest.xml; do
+            test -f "$f" || { echo "Missing $f - unzip so settings.gradle.kts is at the repo root"; exit 1; }
+          done
+          if grep -q "android {" build.gradle.kts; then echo "Root build.gradle.kts must not contain android {}"; exit 1; fi
+          grep -q "pluginManagement" settings.gradle.kts
+          grep -q 'include(":parser", ":app")' settings.gradle.kts
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Parser tests (non-blocking)
+        continue-on-error: true
+        run: gradle :parser:test --stacktrace
+
+      - name: Build debug APK
+        run: gradle :app:assembleDebug --stacktrace
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: parser-test-report
+          path: parser/build/reports/tests/test
+          if-no-files-found: ignore
+
+      - name: Upload build reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-reports
+          path: |
+            app/build/reports
+            parser/build/reports
+          if-no-files-found: ignore
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: tele-expense-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk

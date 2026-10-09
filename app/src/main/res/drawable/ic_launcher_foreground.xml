@@ -1,0 +1,27 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- white coin -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M24,54 A30,30 0 1,0 84,54 A30,30 0 1,0 24,54 Z" />
+    <!-- green inner ring -->
+    <path
+        android:fillColor="#8DC63F"
+        android:pathData="M30,54 A24,24 0 1,0 78,54 A24,24 0 1,0 30,54 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M33,54 A21,21 0 1,0 75,54 A21,21 0 1,0 33,54 Z" />
+    <!-- rising spend bars -->
+    <path
+        android:fillColor="#111111"
+        android:pathData="M39,66 L39,56 L46,56 L46,66 Z" />
+    <path
+        android:fillColor="#111111"
+        android:pathData="M50,66 L50,49 L57,49 L57,66 Z" />
+    <path
+        android:fillColor="#5C8A1E"
+        android:pathData="M61,66 L61,40 L68,40 L68,66 Z" />
+</vector>
